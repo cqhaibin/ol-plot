@@ -398,23 +398,7 @@ class PlotUtils {
         if (features && features.length > 0) {
           features.forEach((feature, index) => {
             if (feature && feature.getGeometry) {
-              let geom = feature.getGeometry()
-              if (geom && geom.getCoordinates) {
-                let type = geom.getType()
-                let coordinates = geom.getCoordinates()
-                rFeatures.push({
-                  'type': 'Feature',
-                  'geometry': {
-                    'type': type,
-                    'coordinates': coordinates
-                  },
-                  'properties': {
-                    'type': feature.getGeometry().getPlotType(),
-                    'style': this.getStyleCode(feature),
-                    'points': feature.getGeometry().getPoints()
-                  }
-                })
-              }
+              rFeatures.push(this.jsonFeature(feature));
             }
           })
         }
@@ -444,12 +428,38 @@ class PlotUtils {
     })
     return rFeatures
   }
+  /**
+   * 将标绘对象转换为Json对象
+   * @param {*} feature 
+   */
+  jsonFeature(feature){
+    let geom = feature.getGeometry();
+    let obj;
+    if (geom && geom.getCoordinates) {
+      let type = geom.getType()
+      let coordinates = geom.getCoordinates()
+      obj = {
+        'type': 'Feature',
+        'geometry': {
+          'type': type,
+          'coordinates': coordinates
+        },
+        'properties': {
+          'type': feature.getGeometry().getPlotType(),
+          'style': this.getStyleCode(feature),
+          'points': feature.getGeometry().getPoints()
+        }
+      };
+    }
+    return obj;
+  }
 
   /**
    * 恢复相关标绘
    * @param features
+   * @param funWrap 自定义包装函数
    */
-  addFeatures (features) {
+  addFeatures (features, funWrap) {
     if (features && Array.isArray(features) && features.length > 0) {
       let layer = getLayerByLayerName(this.map, this.layerName)
       if (!layer) {
@@ -477,6 +487,7 @@ class PlotUtils {
                     feat.setStyle(style_)
                   }
                 }
+                funWrap(feat); //自定义包装
                 source.addFeature(feat)
               } else {
                 console.warn('不存在的标绘类型！')
@@ -490,8 +501,9 @@ class PlotUtils {
                 height: feature.properties['height'],
                 value: feature.properties['value'],
                 style: feature.properties.style
-              })
-              if (this.map && this.map instanceof Map && _plotText) {
+              })  
+              if (this.map && this.map instanceof Map && _plotText) {            
+                funWrap(_plotText); //自定义包装
                 this.map.addOverlay(_plotText)
               } else {
                 console.warn('未传入地图对象或者plotText创建失败！')

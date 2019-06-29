@@ -29,11 +29,11 @@ module.exports = {
       exclude: [resolve('node_modules')]
     }),
     babel({
-      // externalHelpers: true,
-      // runtimeHelpers: true,
+      //externalHelpers: true,
+      //runtimeHelpers: true,
       exclude: [
-        resolve('package.json'),
-        resolve('node_modules/**')
+        resolve('package.json')
+        //,resolve('node_modules/**')
       ]
     }),
     nodeResolve({
