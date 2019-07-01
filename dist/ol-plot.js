@@ -1,7 +1,7 @@
 /*!
  * author: sakitam <smilefdd@gmail.com> 
  * ol-plot v3.0.0
- * build-time: 2019-6-30 22:2
+ * build-time: 2019-7-1 11:29
  * LICENSE: MIT
  * (c) 2019-2019 https://sakitam-fdd.github.io/ol-plot
  */
@@ -928,7 +928,7 @@
       autosize = function autosize(el, options) {
         if (el) {
           Array.prototype.forEach.call(el.length ? el : [el], function (x) {
-            return assign(x, options);
+            return assign(x);
           });
         }
 
@@ -4667,7 +4667,7 @@
       var hiddenDiv = getElement(BASE_HELP_HIDDEN);
 
       if (hiddenDiv && parent) {
-        remove(hiddenDiv, parent);
+        remove(hiddenDiv);
       }
     };
 
@@ -5425,7 +5425,7 @@
 
           if (source$1 && source$1 instanceof source.Vector) {
             var _extents = [];
-            features.forEach(function (feature) {
+            features.forEach(function (feature, index) {
               if (feature && feature['geometry'] && feature['geometry']['type'] !== 'PlotText') {
                 if (feature['properties']['type'] && Geometry[feature['properties']['type']]) {
                   var feat = new Feature({
@@ -5443,7 +5443,7 @@
                     }
                   }
 
-                  funWrap(feat);
+                  funWrap(feat, index);
                   source$1.addFeature(feat);
                 } else {
                   console.warn('不存在的标绘类型！');
@@ -5461,7 +5461,7 @@
                 });
 
                 if (_this2.map && _this2.map instanceof ol.Map && _plotText) {
-                  funWrap(_plotText);
+                  funWrap(_plotText, index);
 
                   _this2.map.addOverlay(_plotText);
                 } else {
