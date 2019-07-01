@@ -472,7 +472,7 @@ class PlotUtils {
         let source = layer.getSource()
         if (source && source instanceof VectorSource) {
           const _extents = []
-          features.forEach(feature => {
+          features.forEach((feature, index) => {
             if (feature && feature['geometry'] && feature['geometry']['type'] !== 'PlotText') {
               if (feature['properties']['type'] && Geometry[feature['properties']['type']]) {
                 let feat = new Feature({
@@ -487,7 +487,7 @@ class PlotUtils {
                     feat.setStyle(style_)
                   }
                 }
-                funWrap(feat); //自定义包装
+                funWrap(feat, index); //自定义包装
                 source.addFeature(feat)
               } else {
                 console.warn('不存在的标绘类型！')
@@ -503,7 +503,7 @@ class PlotUtils {
                 style: feature.properties.style
               })  
               if (this.map && this.map instanceof Map && _plotText) {            
-                funWrap(_plotText); //自定义包装
+                funWrap(_plotText, index); //自定义包装
                 this.map.addOverlay(_plotText)
               } else {
                 console.warn('未传入地图对象或者plotText创建失败！')
